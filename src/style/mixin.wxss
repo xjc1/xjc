@@ -1,0 +1,36 @@
+.allcover {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+.ctt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.tb {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.lr {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+ /deep/ .el-submenu__title {
+  color: #fff;
+}
+ /deep/ .el-menu {
+  background-color: #1f2d3d;
+}
+ /deep/ .el-submenu__title:hover {
+  background-color: #48576a;
+}
+ /deep/ .el-menu-item {
+  color: #fff;
+}
+ /deep/ .el-menu-item.is-active {
+  color: #409EFF;
+}

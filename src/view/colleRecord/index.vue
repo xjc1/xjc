@@ -1,18 +1,28 @@
 <template>
   <div class="fillcontain">
     <head-top />
-    <head-search @onAdd="addCollege" @onSearch="searchCollege" />
+    <head-search
+      @onSearch="searchInfo"
+      @onAdd="addInfo"
+    />
     <div class="table_container">
       <el-table :data="tableData" highlight-current-row style="width: 100%">
-        <el-table-column type="index" width="100" label="编号">
+        <el-table-column type="index" width="50" label="编号">
         </el-table-column>
-        <el-table-column property="clogo" label="校徽" width="220">
+        <el-table-column property="cname" label="院校" width="100">
         </el-table-column>
-        <el-table-column property="name" label="名称" width="220">
+        <el-table-column property="cprovince" label="省份" width="100">
         </el-table-column>
-        <el-table-column property="cprovince" label="省份"> </el-table-column>
-        <el-table-column property="ctype" label="类型"> </el-table-column>
-        <el-table-column property="cteshe" label="层次"> </el-table-column>
+        <el-table-column property="ckebie" label="科别"> </el-table-column>
+        <el-table-column property="cpici" label="批次"> </el-table-column>
+        <el-table-column property="cyear" label="年份" width="100">
+        </el-table-column>
+        <el-table-column property="cmax" label="最高分"> </el-table-column>
+        <el-table-column property="cavg" label="平均分"> </el-table-column>
+        <el-table-column property="cprorecord" label="省控线">
+        </el-table-column>
+        <el-table-column property="cnum" label="录取人数" width="100">
+        </el-table-column>
         <el-table-column label="操作" width="200">
           <template slot-scope="scope">
             <el-button plain size="small" icon="el-icon-edit" @click="modifyItem(scope.row)" v-show="!isShowDetail"
@@ -39,68 +49,81 @@
         </el-pagination>
       </div>
     </div>
+    <addProfessional
+      ref="addMajor"
+      v-if="showAddProfessional"
+      @closePopup="closeAddProfessional"
+    />
   </div>
 </template>
 
 <script>
 import headTop from "@/view/components/headTop";
-import headSearch from "@/view/components/headSearch";
-import { searchCollegeInfo, deleteCollegeInfo } from "@/network/college";
+import headSearch from "./headSearch";
+import addProfessional from "./addProfessional";
+import {
+  searchCollegeRecord,
+  deleteCollegeRecord
+} from "@/network/collegeRecord";
 export default {
-  name: "CollegeManage",
+  name: "professional",
   components: {
     headTop,
-    headSearch
+    headSearch,
+    addProfessional
   },
   data() {
     return {
-      queryParams: {
-        cprovince: "",
-        name: "",
-        ctype: "",
-        cteshe: "",
-      },
       isShowDetail:false,
       tableData: [],
       allList: [],
+      queryParams: {
+        cid: "",
+        ckebie: "",
+        cpici: "",
+        cyear: ""
+      },
       currentRow: null,
       offset: 0,
       limit: 20,
       count: 0,
+      currentPage: 1,
       pageSize: 1,
-      currentPage: 1
+      showAddProfessional: false
     };
   },
   created() {
     const {isShow = false} = this.$route.query;
     this.isShowDetail = isShow;
-    console.log('this.isShowDetail',this.isShowDetail)
     this.initData(this.queryParams);
   },
   methods: {
     async initData(params = {}) {
-      const { data = [] } = await searchCollegeInfo(params);
+      const { data = [] } = await searchCollegeRecord(params);
       this.tableData = data;
       this.allList = data;
       this.count = data.length;
       this.handleCurrentChange(this.currentPage);
+      console.log("数据", data);
     },
-    //增加院校
-    addCollege() {
-      this.$router.push("/modifyCollege");
+    addInfo() {
+      this.showAddProfessional = true;
     },
-    //搜素院校
-    searchCollege({ selectValue = "", inputValue = "" }) {
-      console.log('selectValue',selectValue,'inputValue',inputValue)
+    closeAddProfessional() {
+      this.initData(this.queryParams);
+      this.showAddProfessional = false;
+    },
+    //搜素
+    searchInfo({ selectValue = "",selectValue2 = "",selectValue3 = "", inputValue = "" }) {
       this.queryParams.cprovince = selectValue;
-      this.queryParams.name = inputValue;
-      this.queryParams.ctype = inputValue;
-      this.queryParams.cteshe = inputValue;
+      this.queryParams.ckebie = selectValue2;
+      this.queryParams.cpici = selectValue3;
+      this.queryParams.cyear = inputValue;
       this.initData(this.queryParams);
     },
-    //删除院校
+    //删除
     async deleteItem({ _id = "" }) {
-      const res = await deleteCollegeInfo(_id);
+      const res = await deleteCollegeRecord(_id);
       console.log("res", res);
       if (res.code == 200) {
         this.$message({
@@ -117,10 +140,13 @@ export default {
         });
       }
     },
-    //修改院校
+    //修改
     modifyItem(val = {},isShow = true) {
       console.log(val);
-      this.$router.push({ name: "modifyCollege", query: { collegeInfo: val,isShow,} });
+      this.showAddProfessional = true;
+      this.$nextTick(() => {
+        this.$refs.addMajor.initData(val,isShow);
+      });
     },
     handleSizeChange(val) {},
     handleCurrentChange(val) {
@@ -129,6 +155,7 @@ export default {
         val * this.pageSize
       );
       this.currentPage = val;
+      console.log(this.tableData);
     }
   }
 };

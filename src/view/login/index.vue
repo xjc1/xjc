@@ -18,12 +18,18 @@
               v-model="loginForm.password"
             ></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item class="login-btn">
             <el-button
               type="primary"
               @click="submitForm('loginForm')"
               class="submit_btn"
               >登陆</el-button
+            >
+            <el-button
+              type="info"
+              @click="goToRegister"
+              class="submit_btn"
+              >用户注册</el-button
             >
           </el-form-item>
         </el-form>
@@ -34,8 +40,8 @@
 </template>
 
 <script>
-import { login } from "@/api/getData";
-import { mapActions, mapState } from "vuex";
+import { login } from "@/network/login";
+import { mapMutations } from "vuex";
 
 export default {
   data() {
@@ -55,29 +61,22 @@ export default {
   },
   mounted() {
     this.showLogin = true;
-    if (!this.adminInfo.id) {
-      this.getAdminData();
-    }
-  },
-  computed: {
-    ...mapState(["adminInfo"])
   },
   methods: {
-    ...mapActions(["getAdminData"]),
+    ...mapMutations('userInfo',["setUserInfo"]),
     async submitForm(formName) {
       this.$refs[formName].validate(async valid => {
-        this.$router.push("home");
-        return;
         if (valid) {
           const res = await login({
-            user_name: this.loginForm.username,
+            name: this.loginForm.username,
             password: this.loginForm.password
           });
-          if (res.status == 1) {
+          if (res.code == 200) {
             this.$message({
               type: "success",
               message: "登录成功"
             });
+            this.setUserInfo({name:this.loginForm.username,password:this.loginForm.password})
             this.$router.push("home");
           } else {
             this.$message({
@@ -88,25 +87,17 @@ export default {
         } else {
           this.$notify.error({
             title: "错误",
-            message: "请输入正确的用户名密码",
-            offset: 100
+            message: "请输入正确的用户名、密码",
+            offset: 250
           });
           return false;
         }
       });
-    }
+    },
+    goToRegister(){
+      this.$router.push({name:'register'})
+    },
   },
-  watch: {
-    adminInfo: function(newValue) {
-      if (newValue.id) {
-        this.$message({
-          type: "success",
-          message: "检测到您之前登录过，将自动登录"
-        });
-        this.$router.push("manage");
-      }
-    }
-  }
 };
 </script>
 
@@ -149,5 +140,13 @@ export default {
 .form-fade-leave-active {
   transform: translate3d(0, -50px, 0);
   opacity: 0;
+}
+.login-btn{
+  /deep/.el-form-item__content{
+    display: flex;
+  }
+  .submit_btn{
+    width: 50%;
+  }
 }
 </style>
