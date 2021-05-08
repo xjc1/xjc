@@ -8,6 +8,7 @@ const colleRecord = () => import('@/view/colleRecord');
 const majorRecord = () => import('@/view/majorRecord');
 const userCenter = () => import('@/view/userCenter');
 const compareCollege = () => import('@/view/compareCollege');
+const recommend = () => import('@/view/recommend');
 
 Vue.use(Router)
 const routes = [{
@@ -22,8 +23,12 @@ const routes = [{
 {
   path: '/home',
   component: Home,
-  name: '',
+  name: 'home',
   children: [{
+    path: '/recommend',
+    component: recommend,
+    meta: ['院校推荐'],
+  }, {
     path: '',
     component: collegeManage,
     meta: [],
@@ -37,7 +42,7 @@ const routes = [{
   }, {
     path: '/searchCollege',
     component: collegeManage,
-    meta: [ '查询院校'],
+    meta: ['查询院校'],
   }, {
     path: '/professional',
     component: professional,
@@ -45,7 +50,7 @@ const routes = [{
   }, {
     path: '/searchProfessional',
     component: professional,
-    meta: [ '查询专业'],
+    meta: ['查询专业'],
   }, {
     path: '/modifyCollege',
     name: 'modifyCollege',
@@ -95,7 +100,7 @@ const routes = [{
       keepAlive: false
     },
     component: compareCollege,
-    meta: [ '院校对比'],
+    meta: ['院校对比'],
   },
   ]
 },

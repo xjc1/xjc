@@ -7,6 +7,9 @@
         <el-table-column type="index" width="100" label="编号">
         </el-table-column>
         <el-table-column property="clogo" label="校徽" width="220">
+          <template slot-scope="scope">
+            <img :src="getImg(scope.row.clogo)" class="bcg-box" />
+          </template>
         </el-table-column>
         <el-table-column property="name" label="名称" width="220">
         </el-table-column>
@@ -46,6 +49,7 @@
 import headTop from "@/view/components/headTop";
 import headSearch from "@/view/components/headSearch";
 import { searchCollegeInfo, deleteCollegeInfo } from "@/network/college";
+import {Base64} from "js-base64";
 export default {
   name: "CollegeManage",
   components: {
@@ -67,7 +71,7 @@ export default {
       offset: 0,
       limit: 20,
       count: 0,
-      pageSize: 1,
+      pageSize: 10,
       currentPage: 1
     };
   },
@@ -76,6 +80,11 @@ export default {
     this.isShowDetail = isShow;
     console.log('this.isShowDetail',this.isShowDetail)
     this.initData(this.queryParams);
+  },
+  computed:{
+    getImg(){
+      return imgStr=> Base64.decode(imgStr)
+    }
   },
   methods: {
     async initData(params = {}) {
@@ -89,7 +98,7 @@ export default {
     addCollege() {
       this.$router.push("/modifyCollege");
     },
-    //搜素院校
+    //搜索院校
     searchCollege({ selectValue = "", inputValue = "" }) {
       console.log('selectValue',selectValue,'inputValue',inputValue)
       this.queryParams.cprovince = selectValue;
@@ -138,5 +147,9 @@ export default {
 @import "~@/style/mixin";
 .table_container {
   padding: 20px;
+  img{
+    width: 100px;
+    height: 100px;
+  }
 }
 </style>

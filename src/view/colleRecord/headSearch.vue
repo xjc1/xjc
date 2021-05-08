@@ -59,9 +59,9 @@
           style="width:110px"
         ></el-input>
       </div>
-      <el-button type="info" @click="onSearch">搜素</el-button>
+      <el-button type="info" @click="onSearch">搜索</el-button>
     </div>
-    <div class="headSearch-right" @click="onAdd">
+    <div class="headSearch-right" @click="onAdd" v-if="isAdmin">
       <div><el-button type="info">新增</el-button></div>
     </div>
   </div>
@@ -69,6 +69,7 @@
 
 <script>
 import { provinceList,keciList,piciList } from "@/utils/constant";
+import { mapState} from "vuex";
 export default {
   name: "HeadSearch",
   props: {
@@ -109,7 +110,7 @@ export default {
     }
   },
   computed: {
-    getValue() {}
+    ...mapState("userInfo", ["isAdmin"]),
   }
 };
 </script>

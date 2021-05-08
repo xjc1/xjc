@@ -2,7 +2,7 @@
   <div class="modifyCollege">
     <head-top />
     <div class="modifyCollege-headIcon">
-      <img :src="crestIcon" />
+      <!-- <img :src="crestIcon" /> -->
     </div>
     <div class="modifyCollege-content">
       <el-form
@@ -18,7 +18,11 @@
         </el-form-item>
         <el-form-item label="所属省份" prop="cprovince">
           <!-- <el-input v-model="ruleForm.cprovince" autocomplete="off"></el-input> -->
-          <el-select v-model="ruleForm.cprovince" placeholder="请选择省份" style="width:100%">
+          <el-select
+            v-model="ruleForm.cprovince"
+            placeholder="请选择省份"
+            style="width:100%"
+          >
             <el-option
               v-for="item in provinceList"
               :key="item.id"
@@ -29,7 +33,24 @@
           </el-select>
         </el-form-item>
         <el-form-item label="校徽图片" prop="clogo">
-          <el-input v-model="ruleForm.clogo" autocomplete="off"></el-input>
+          <!-- <el-input
+            v-model="ruleForm.clogo"
+            autocomplete="off"
+            readonly
+          ></el-input> -->
+          <el-upload
+            class="upload-demo"
+            :auto-upload="false"
+            action="#"
+            :on-change="getFile"
+            :on-preview="handlePreview"
+            :on-remove="handleRemove"
+            :limit="1"
+            :on-exceed="handleExceed"
+            :file-list="fileList"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
         </el-form-item>
         <el-form-item label="院校分类" prop="ctype">
           <el-input v-model.number="ruleForm.ctype"></el-input>
@@ -65,6 +86,7 @@ import headTop from "@/view/components/headTop";
 import crestIcon from "../../assets/siChuanIcon.jpeg";
 import { addCollegeInfo, modifyCollegeInfo } from "@/network/college";
 import { provinceList } from "@/utils/constant";
+import {Base64} from 'js-base64'
 export default {
   name: "modifyCollege",
   components: {
@@ -78,6 +100,7 @@ export default {
       callback();
     };
     return {
+      fileList: [],
       provinceList,
       crestIcon,
       isShowSubmit: true,
@@ -107,13 +130,46 @@ export default {
   created() {
     const { collegeInfo = {}, isShow = true } = this.$route.query;
     this.isShowSubmit = isShow;
-    console.log(collegeInfo, "collegeInfo");
     if (!collegeInfo._id) return;
     for (let key in collegeInfo) {
       this.ruleForm[key] = collegeInfo[key];
     }
   },
   methods: {
+    handleRemove(file, fileList) {
+    },
+    handlePreview(file) {
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(
+        `当前限制选择 1 个文件，本次选择了 ${
+          files.length
+        } 个文件，共选择了 ${files.length + fileList.length} 个文件`
+      );
+    },
+    getFile(file) {
+      this.getBase64(file.raw).then(res => {
+       const imgStr= Base64.encode(res)
+        this.ruleForm.clogo = imgStr;
+      });
+    },
+    getBase64(file) {
+      return new Promise(function(resolve, reject) {
+        let reader = new FileReader();
+        let imgResult = "";
+        reader.readAsDataURL(file);
+        reader.onload = function() {
+          imgResult = reader.result;
+        };
+        reader.onerror = function(error) {
+          reject(error);
+        };
+        reader.onloadend = function() {
+          resolve(imgResult);
+        };
+      });
+    },
+
     async submitForm(formName) {
       this.$refs[formName].validate(async (valid, submitData) => {
         if (valid) {

@@ -17,7 +17,7 @@
 
         <el-table-column label="操作" width="100">
           <template slot-scope="scope">
-            <el-button  plain size="small"  icon="el-icon-delete"  @click="deleteItem(scope.row)"
+            <el-button  plain size="small"  icon="el-icon-delete" v-if="scope.row.role != '管理员'"  @click="deleteItem(scope.row)"
               >删除</el-button
             >
           </template>
@@ -61,7 +61,7 @@ export default {
       limit: 20,
       count: 0,
       currentPage: 1,
-      pageSize: 1,
+      pageSize: 10,
       showAddProfessional: false
     };
   },
@@ -88,7 +88,7 @@ export default {
       this.initData();
       this.showAddProfessional = false;
     },
-    //搜素
+    //搜索
     searchInfo({ selectValue = "", inputValue = "" }) {
       this.queryParams.cid = selectValue;
       this.queryParams.ckebie = inputValue;

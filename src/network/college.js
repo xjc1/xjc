@@ -10,8 +10,9 @@ export function addCollegeInfo(collegeInfo = {}) {
 }
 export function modifyCollegeInfo(collegeInfo = {}) {
   return axios({
+    method:'post',
     url: '/modifyCollegeInfo',
-    params: {
+    data: {
       ...collegeInfo
     }
   })

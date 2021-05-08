@@ -1,42 +1,10 @@
 <template>
-  <div class="majorRecord-headSearch">
+  <div class="headSearch">
     <div class="headSearch-left">
-      <div class="headSearch-provinceSelect">
-        <span>院校:</span>
-        <el-select
-          v-model="params.selectValue1"
-          clearable
-          placeholder="请选择院校"
-        >
-          <el-option
-            v-for="item in allCollegeList"
-            :key="'allCollegeList' + item._id"
-            :label="item.name"
-            :value="item.name"
-          >
-          </el-option>
-        </el-select>
-      </div>
-      <div class="headSearch-provinceSelect">
-        <span>专业:</span>
-        <el-select
-          v-model="params.selectValue2"
-          clearable
-          placeholder="请选择专业"
-        >
-          <el-option
-            v-for="item in allMajorList"
-            :key="'allMajorList' + item._id"
-            :label="item.name"
-            :value="item.name"
-          >
-          </el-option>
-        </el-select>
-      </div>
       <div class="headSearch-provinceSelect">
         <span>省份:</span>
         <el-select
-          v-model="params.selectValue3"
+          v-model="params.provinceValue"
           clearable
           placeholder="请选择省份"
         >
@@ -51,7 +19,7 @@
       </div>
       <div class="headSearch-provinceSelect">
         <span>科别:</span>
-        <el-select v-model="params.selectValue4" clearable placeholder="全部">
+        <el-select v-model="params.kebeiValue" clearable placeholder="全部" style="width:100px">
           <el-option
             v-for="item in keciList"
             :key="'keciList' + item.id"
@@ -62,27 +30,8 @@
         </el-select>
       </div>
       <div class="headSearch-provinceSelect">
-        <span>批次:</span>
-        <el-select
-          v-model="params.selectValue5"
-          clearable
-          placeholder="全部"
-        >
-          <el-option
-            v-for="item in piciList"
-            :key="'piciList' + item.id"
-            :label="item.name"
-            :value="item.name"
-          >
-          </el-option>
-        </el-select>
-      </div>
-      <div class="headSearch-contentSearch">
-        <span>年份:</span>
-        <el-input
-          v-model="params.inputValue"
-          placeholder="请输入年份"
-        ></el-input>
+        <span>高考分数:</span>
+        <el-input v-model.number="params.minScore" placeholder="请输入高考分数"  style="width:150px"></el-input>
       </div>
       <el-button type="info" @click="onSearch">搜索</el-button>
     </div>
@@ -113,12 +62,10 @@ export default {
   data() {
     return {
       params: {
-        selectValue1: "",
-        selectValue2: "",
-        selectValue3: "",
-        selectValue4: "",
-        selectValue5: "",
-        inputValue: ""
+        provinceValue: "",
+        kebeiValue: "",
+        minScore: "",
+        maxScore: "",
       },
       provinceList,
       keciList,
@@ -130,13 +77,10 @@ export default {
       this.$emit("onAdd");
     },
     onSearch() {
-      console.log(
-        "selectValue",
-        this.params.selectValue,
-        "inputValue",
-        this.params.inputValue
-      );
       this.$emit("onSearch", this.params);
+    },
+    setMaxValue(){
+      this.params.maxScore = this.params.maxScore<this.params.minScore?this.params.minScore:this.params.maxScore;
     }
   },
   computed: {
@@ -145,8 +89,8 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
-.majorRecord-headSearch {
+<style lang="less">
+.headSearch {
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -158,7 +102,6 @@ export default {
   }
   .headSearch-provinceSelect {
     margin-right: 10px;
-    margin-bottom: 10px;
     span {
       margin-right: 7px;
     }

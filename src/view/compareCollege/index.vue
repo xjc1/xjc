@@ -11,13 +11,15 @@
         </el-table-column>
         <el-table-column label="四川大学" width="350">
           <template slot-scope="scope">
-            <span>{{ collegeOneList[0][keyList[scope.$index]] }}</span>
+            <img :src="getImg(collegeOneList[0].clogo)"  v-if="keyList[scope.$index] == 'clogo'"  class="bcg-box" />
+            <span v-else>{{ collegeOneList[0][keyList[scope.$index]] }}</span>
           </template>
         </el-table-column>
         <el-table-column property="ckebie" label="VS"> </el-table-column>
         <el-table-column label="山东大学" v-if="collegeTwoList.length > 0">
           <template slot-scope="scope">
-            <span>{{ collegeTwoList[0][keyList[scope.$index]] }}</span>
+            <img :src="getImg(collegeTwoList[0].clogo)"  v-if="keyList[scope.$index] == 'clogo'" class="bcg-box" />
+            <span v-else>{{ collegeTwoList[0][keyList[scope.$index]] }}</span>
           </template>
         </el-table-column>
       </el-table>
@@ -29,6 +31,7 @@
 import headTop from "@/view/components/headTop";
 import headSearch from "./headSearch";
 import { searchCollegeInfo } from "@/network/college";
+import {Base64} from "js-base64";
 export default {
   name: "professional",
   components: {
@@ -62,8 +65,13 @@ export default {
       collegeTwoList: []
     };
   },
+  computed:{
+    getImg(){
+      return imgStr=> Base64.decode(imgStr)
+    }
+  },
   methods: {
-    //搜素
+    //搜索
     async searchInfo({ selectValue1 = "", selectValue2 = "" }) {
       if (selectValue1 == "" || selectValue2 == "") {
         this.$message({
@@ -90,5 +98,9 @@ export default {
 @import "~@/style/mixin";
 .table_container {
   padding: 20px;
+  img{
+    width: 100px;
+    height: 100px;
+  }
 }
 </style>

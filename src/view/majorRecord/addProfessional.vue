@@ -192,7 +192,7 @@ export default {
             zkebie: this.ruleForm.zkebie,
             zpici: this.ruleForm.zpici,
             zyear: this.ruleForm.zyear,
-            zmax: this.ruleForm.zcmax,
+            zmax: this.ruleForm.zmax,
             zavg: this.ruleForm.zavg,
             cname: this.ruleForm.cname,
             cid: this.ruleForm.cid,

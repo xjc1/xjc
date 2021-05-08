@@ -24,6 +24,14 @@ export function searchCollegeRecord(CollegeRecordInfo = {}) {
     }
   })
 }
+export function recommendCollegeRecord(CollegeRecordInfo = {}) {
+  return axios({
+    url: '/recommendCollegeRecord',
+    params: {
+      ...CollegeRecordInfo
+    }
+  })
+}
 
 export function deleteCollegeRecord(id = '') {
   return axios({

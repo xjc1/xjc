@@ -7,7 +7,7 @@
           style="min-height: 100%;background:#324057"
           router
         >
-          <el-menu-item index="home"
+          <el-menu-item index="recommend"
             ><i class="el-icon-menu"></i>首页</el-menu-item
           >
           <el-submenu index="2" v-if="isAdmin">

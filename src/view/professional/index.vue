@@ -90,7 +90,7 @@ export default {
       limit: 20,
       count: 0,
       currentPage: 1,
-      pageSize: 1,
+      pageSize: 10,
       showAddProfessional: false
     };
   },
@@ -116,7 +116,7 @@ export default {
     this.initData(this.queryParams);
       this.showAddProfessional = false;
     },
-    //搜素
+    //搜索
     searchMajor({ selectValue = "", inputValue = "" }) {
       this.queryParams.cname = selectValue;
       this.queryParams.name = inputValue;

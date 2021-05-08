@@ -1,10 +1,7 @@
 <template>
   <div class="fillcontain">
     <head-top />
-    <head-search
-      @onSearch="searchInfo"
-      @onAdd="addInfo"
-    />
+    <head-search @onSearch="searchInfo" @onAdd="addInfo" />
     <div class="table_container">
       <el-table :data="tableData" highlight-current-row style="width: 100%">
         <el-table-column type="index" width="50" label="编号">
@@ -21,21 +18,6 @@
         <el-table-column property="cavg" label="平均分"> </el-table-column>
         <el-table-column property="cprorecord" label="省控线">
         </el-table-column>
-        <el-table-column property="cnum" label="录取人数" width="100">
-        </el-table-column>
-        <el-table-column label="操作" width="200">
-          <template slot-scope="scope">
-            <el-button plain size="small" icon="el-icon-edit" @click="modifyItem(scope.row)" v-show="!isShowDetail"
-              >修改</el-button
-            >
-            <el-button plain size="small"  icon="el-icon-delete" @click="deleteItem(scope.row)" v-show="!isShowDetail"
-              >删除</el-button
-            >
-            <el-button plain size="small" icon="el-icon-edit" @click="modifyItem(scope.row,false)" v-show="isShowDetail"
-              >详情</el-button
-            >
-          </template>
-        </el-table-column>
       </el-table>
       <div class="Pagination" style="text-align: left; margin-top: 10px">
         <el-pagination
@@ -49,39 +31,28 @@
         </el-pagination>
       </div>
     </div>
-    <addProfessional
-      ref="addMajor"
-      v-if="showAddProfessional"
-      @closePopup="closeAddProfessional"
-    />
   </div>
 </template>
 
 <script>
 import headTop from "@/view/components/headTop";
 import headSearch from "./headSearch";
-import addProfessional from "./addProfessional";
-import {
-  searchCollegeRecord,
-  deleteCollegeRecord
-} from "@/network/collegeRecord";
+import { recommendCollegeRecord } from "@/network/collegeRecord";
 export default {
   name: "professional",
   components: {
     headTop,
-    headSearch,
-    addProfessional
+    headSearch
   },
   data() {
     return {
-      isShowDetail:false,
+      isShowDetail: false,
       tableData: [],
       allList: [],
       queryParams: {
-        cid: "",
+        cprovince: "",
         ckebie: "",
-        cpici: "",
-        cyear: ""
+        minScore: "",
       },
       currentRow: null,
       offset: 0,
@@ -92,14 +63,9 @@ export default {
       showAddProfessional: false
     };
   },
-  created() {
-    const {isShow = false} = this.$route.query;
-    this.isShowDetail = isShow;
-    this.initData(this.queryParams);
-  },
   methods: {
     async initData(params = {}) {
-      const { data = [] } = await searchCollegeRecord(params);
+      const { data = [] } = await recommendCollegeRecord(params);
       this.tableData = data;
       this.allList = data;
       this.count = data.length;
@@ -114,39 +80,23 @@ export default {
       this.showAddProfessional = false;
     },
     //搜索
-    searchInfo({ selectValue = "",selectValue2 = "",selectValue3 = "", inputValue = "" }) {
-      this.queryParams.cprovince = selectValue;
-      this.queryParams.ckebie = selectValue2;
-      this.queryParams.cpici = selectValue3;
-      this.queryParams.cyear = inputValue;
-      this.initData(this.queryParams);
-    },
-    //删除
-    async deleteItem({ _id = "" }) {
-      const res = await deleteCollegeRecord(_id);
-      console.log("res", res);
-      if (res.code == 200) {
-        this.$message({
-          type: "success",
-          message: "删除成功"
-        });
-        setTimeout(() => {
-          this.initData(this.queryParams);
-        }, 500);
-      } else {
+    searchInfo({
+      provinceValue = "",
+      kebeiValue = "",
+      minScore = "",
+      maxScore = ""
+    }) {
+      if (minScore === "") {
         this.$message({
           type: "error",
-          message: res.message
+          message: '请输入高考分数'
         });
+        return;
       }
-    },
-    //修改
-    modifyItem(val = {},isShow = true) {
-      console.log(val);
-      this.showAddProfessional = true;
-      this.$nextTick(() => {
-        this.$refs.addMajor.initData(val,isShow);
-      });
+      this.queryParams.cprovince = provinceValue;
+      this.queryParams.ckebie = kebeiValue;
+      this.queryParams.minScore = minScore;
+      this.initData(this.queryParams);
     },
     handleSizeChange(val) {},
     handleCurrentChange(val) {

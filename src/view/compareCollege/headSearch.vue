@@ -5,7 +5,7 @@
         <span>院校1:</span>
         <el-select v-model="params.selectValue1" clearable  placeholder="请选择院校">
           <el-option
-            v-for="item in provinceList"
+            v-for="item in allCollegeList"
             :key="item._id"
             :label="item.name"
             :value="item.name"
@@ -18,7 +18,7 @@
         <span>院校2:</span>
         <el-select v-model="params.selectValue2" clearable  placeholder="请选择院校">
           <el-option
-            v-for="item in provinceList"
+            v-for="item in allCollegeList"
             :key="item._id"
             :label="item.name"
             :value="item.name"
@@ -32,7 +32,9 @@
 </template>
 
 <script>
+import { collegeMixin } from "@/mixins/collegeMixin";
 export default {
+  mixins: [collegeMixin],
   name: "HeadSearch",
   data() {
     return {
