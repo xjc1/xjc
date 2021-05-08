@@ -63,7 +63,7 @@ export default {
     this.showLogin = true;
   },
   methods: {
-    ...mapMutations('userInfo',["setUserInfo"]),
+    ...mapMutations('userInfo',["setUserInfo",'setUserPermission']),
     async submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
@@ -76,6 +76,7 @@ export default {
               type: "success",
               message: "登录成功"
             });
+            this.setUserPermission(false)
             this.setUserInfo({name:this.loginForm.username,password:this.loginForm.password})
             this.$router.push("home");
           } else {

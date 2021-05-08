@@ -20,6 +20,8 @@ export const userMixin = {
     if (nowUser[0].role == 'admin'){
       this.isAdmin = true;
       this.setUserPermission(true)
+    }else{
+      this.isAdmin = false;
     }
     console.log('allUserList', this.allUserList, 'this.isAdmin', this.isAdmin)
   },

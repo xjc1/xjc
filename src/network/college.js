@@ -25,6 +25,14 @@ export function searchCollegeInfo(collegeInfo = {}) {
     }
   })
 }
+export function searchCompareCollegeInfo(collegeInfo = {}) {
+  return axios({
+    url: '/searchCompareCollegeInfo',
+    params: {
+      ...collegeInfo
+    }
+  })
+}
 
 export function deleteCollegeInfo(id = '') {
   return axios({

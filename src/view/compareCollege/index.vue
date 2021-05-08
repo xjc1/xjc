@@ -9,14 +9,14 @@
             <span>{{ tableData[scope.$index].cname }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="四川大学" width="350">
+        <el-table-column  :label="getOneCollegeName" width="350">
           <template slot-scope="scope">
             <img :src="getImg(collegeOneList[0].clogo)"  v-if="keyList[scope.$index] == 'clogo'"  class="bcg-box" />
             <span v-else>{{ collegeOneList[0][keyList[scope.$index]] }}</span>
           </template>
         </el-table-column>
         <el-table-column property="ckebie" label="VS"> </el-table-column>
-        <el-table-column label="山东大学" v-if="collegeTwoList.length > 0">
+        <el-table-column  :label="getTwoCollegeName" v-if="collegeTwoList.length > 0">
           <template slot-scope="scope">
             <img :src="getImg(collegeTwoList[0].clogo)"  v-if="keyList[scope.$index] == 'clogo'" class="bcg-box" />
             <span v-else>{{ collegeTwoList[0][keyList[scope.$index]] }}</span>
@@ -30,7 +30,7 @@
 <script>
 import headTop from "@/view/components/headTop";
 import headSearch from "./headSearch";
-import { searchCollegeInfo } from "@/network/college";
+import { searchCompareCollegeInfo } from "@/network/college";
 import {Base64} from "js-base64";
 export default {
   name: "professional",
@@ -68,7 +68,13 @@ export default {
   computed:{
     getImg(){
       return imgStr=> Base64.decode(imgStr)
-    }
+    },
+    getOneCollegeName(){
+      return this.collegeOneList[0]?this.collegeOneList[0].name:''
+    },
+    getTwoCollegeName(){
+      return this.collegeTwoList[0]?this.collegeTwoList[0].name:''
+    },
   },
   methods: {
     //搜索
@@ -80,9 +86,8 @@ export default {
         });
         return;
       }
-      const { data = [] } = await searchCollegeInfo({ name: selectValue1 });
-      const { data: data2 } = await searchCollegeInfo({ name: selectValue2 });
-      // this.collegeTwoList = await searchCollegeInfo({ name: selectValue2 });
+      const { data = [] } = await searchCompareCollegeInfo({ name: selectValue1 });
+      const { data: data2 } = await searchCompareCollegeInfo({ name: selectValue2 });
       this.collegeOneList = data;
       this.collegeTwoList = data2;
       console.log(this.collegeOneList);
